@@ -380,13 +380,13 @@ area &lt;- read_html(&quot;https://www.yelp.com/search?find_desc=ramen&amp;find_
 <td align="left">3. Ramen Danbo</td>
 <td align="left">4 star rating</td>
 <td align="left">1833 W 4th Avenue</td>
-<td align="left">Kitsilano</td>
+<td align="left">West End</td>
 </tr>
 <tr class="odd">
 <td align="left">4. Kintaro Ramen</td>
 <td align="left">4 star rating</td>
 <td align="left">788 Denman Street</td>
-<td align="left">West End</td>
+<td align="left">Kitsilano</td>
 </tr>
 <tr class="even">
 <td align="left">5. Motomachi Shokudo</td>
@@ -403,13 +403,13 @@ area &lt;- read_html(&quot;https://www.yelp.com/search?find_desc=ramen&amp;find_
 <tr class="even">
 <td align="left">7. Grand Noodle Emporium</td>
 <td align="left">3.5 star rating</td>
-<td align="left">841 Bidwell Street</td>
-<td align="left">UBC</td>
+<td align="left">6133 University Boulevard</td>
+<td align="left">West End</td>
 </tr>
 <tr class="odd">
 <td align="left">8. Ramen TAKA notsume</td>
 <td align="left">3.5 star rating</td>
-<td align="left">6133 University Boulevard</td>
+<td align="left">841 Bidwell Street</td>
 <td align="left">West End</td>
 </tr>
 <tr class="even">
@@ -421,7 +421,7 @@ area &lt;- read_html(&quot;https://www.yelp.com/search?find_desc=ramen&amp;find_
 </tbody>
 </table>
 <p>Finally, we store the data for further processing, maybe.</p>
-<pre class="r"><code>write.csv(yelp_ramen, &quot;yelp_ramen.tsv&quot;)</code></pre>
+<pre class="r"><code>write.csv(yelp_ramen, &quot;yelp_ramen.csv&quot;)</code></pre>
 <p>Also note that there are no phone numbers available right now, because it is very complicated and not seperable by <code>html_nodes</code>. So we would need API queries for them. See the next chapter!</p>
 </div>
 

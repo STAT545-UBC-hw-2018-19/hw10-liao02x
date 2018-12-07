@@ -487,20 +487,35 @@ yelp_ramen_new &lt;- fromJSON(getForm(url,
 </tr>
 </tbody>
 </table>
+<p>And we can save the new data to the disk.</p>
+<pre class="r"><code>write.csv(yelp_ramen_new, &quot;yelp_ramen_new.csv&quot;)</code></pre>
 </div>
 <div id="try-more-than-get-with-github-api" class="section level2">
 <h2>Try more than <code>GET</code> with github API</h2>
-<p>We can do the exact same thing as the previous section, searching for ramen near UBC, but in a more elegent way.</p>
-<pre class="r"><code>url &lt;- &quot;https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issue&quot;
+<p>We can try adding a issue by <code>POST</code>. It is easier to use <code>httr</code> here.</p>
+<pre class="r"><code>library(httr)
 
-header = c(
-    &quot;Authorization&quot; = paste(&quot;token&quot;, github_api_key)
+url &lt;- &quot;https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues&quot;
+
+body = tibble(
+    title = &quot;R API test&quot;,
+    body = &quot;This issue is for R API test for github.&quot;,
 )
 
-params = c(
-    &quot;title&quot; = &quot;R API test&quot;,
-    &quot;body&quot; = &quot;This issue is for R API test for github.&quot;
+POST(url,
+  accept_json(),
+  add_headers(&quot;Authorization&quot; = paste(&quot;token&quot;, github_api_key)),
+  body = toJSON(body)
 )</code></pre>
+<pre><code>## Response [https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues]
+##   Date: 2018-12-07 08:06
+##   Status: 422
+##   Content-Type: application/json; charset=utf-8
+##   Size: 247 B
+## {
+##   &quot;message&quot;: &quot;Invalid request.\n\nFor 'links/0/schema', [{\&quot;title\&quot;=&gt;\&quot;R...
+##   &quot;documentation_url&quot;: &quot;https://developer.github.com/v3/issues/#create-a...
+## }</code></pre>
 </div>
 
 

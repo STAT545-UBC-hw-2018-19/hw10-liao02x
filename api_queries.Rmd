@@ -66,26 +66,29 @@ Now we can see the result. In this way it is much more easier to get the infomat
 knitr::kable(head(yelp_ramen_new, 10))
 ```
 
+And we can save the new data to the disk.
+
+```{r}
+write.csv(yelp_ramen_new, "yelp_ramen_new.csv")
+```
+
 
 ## Try more than `GET` with github API
 
-We can try adding a issue by `POST`.
+We can try adding a issue by `POST`. It is easier to use `httr` here.
 
 ```{r}
-url <- "https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues"
+library(httr)
 
-header = c(
-	"Accept" = "application/vnd.github.symmetra-preview+json",
-	"Authorization" = paste("token", github_api_key)
-)
+url <- "https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues"
 
 body = tibble(
 	title = "R API test",
 	body = "This issue is for R API test for github.",
 )
 
-postForm(url,
-				 .opts = list(httpheader = header,
-				 						 postfields = toJSON(body))
-				 )
-
+POST(url,
+  accept_json(),
+  add_headers("Authorization" = paste("token", github_api_key)),
+  body = toJSON(body)
+)

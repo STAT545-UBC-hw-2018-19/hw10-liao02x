@@ -62,7 +62,7 @@ knitr::kable(head(yelp_ramen, 10))
 Finally, we store the data for further processing, maybe.
 
 ```{r}
-write.csv(yelp_ramen, "yelp_ramen.tsv")
+write.csv(yelp_ramen, "yelp_ramen.csv")
 ```
 
 Also note that there are no phone numbers available right now, because it is very complicated and not seperable by `html_nodes`. So we would need API queries for them. See the next chapter!
