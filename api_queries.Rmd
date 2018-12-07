@@ -82,13 +82,8 @@ library(httr)
 
 url <- "https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues"
 
-body = tibble(
-	title = "R API test",
-	body = "This issue is for R API test for github.",
-)
-
 POST(url,
-  accept_json(),
+  add_headers("Accept" = "application/vnd.github.squirrel-girl-preview"),
   add_headers("Authorization" = paste("token", github_api_key)),
-  body = toJSON(body)
+  body = "{\"title\":\"R API test\",\"body\":\"This issue is for R API test for github.\"}"
 )

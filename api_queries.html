@@ -497,25 +497,27 @@ yelp_ramen_new &lt;- fromJSON(getForm(url,
 
 url &lt;- &quot;https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues&quot;
 
-body = tibble(
-    title = &quot;R API test&quot;,
-    body = &quot;This issue is for R API test for github.&quot;,
-)
-
 POST(url,
-  accept_json(),
+  add_headers(&quot;Accept&quot; = &quot;application/vnd.github.squirrel-girl-preview&quot;),
   add_headers(&quot;Authorization&quot; = paste(&quot;token&quot;, github_api_key)),
-  body = toJSON(body)
+  body = &quot;{\&quot;title\&quot;:\&quot;R API test\&quot;,\&quot;body\&quot;:\&quot;This issue is for R API test for github.\&quot;}&quot;
 )</code></pre>
 <pre><code>## Response [https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues]
-##   Date: 2018-12-07 08:06
-##   Status: 422
+##   Date: 2018-12-07 08:39
+##   Status: 201
 ##   Content-Type: application/json; charset=utf-8
-##   Size: 247 B
+##   Size: 2.26 kB
 ## {
-##   &quot;message&quot;: &quot;Invalid request.\n\nFor 'links/0/schema', [{\&quot;title\&quot;=&gt;\&quot;R...
-##   &quot;documentation_url&quot;: &quot;https://developer.github.com/v3/issues/#create-a...
-## }</code></pre>
+##   &quot;url&quot;: &quot;https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x...
+##   &quot;repository_url&quot;: &quot;https://api.github.com/repos/STAT545-UBC-students/h...
+##   &quot;labels_url&quot;: &quot;https://api.github.com/repos/STAT545-UBC-students/hw10-...
+##   &quot;comments_url&quot;: &quot;https://api.github.com/repos/STAT545-UBC-students/hw1...
+##   &quot;events_url&quot;: &quot;https://api.github.com/repos/STAT545-UBC-students/hw10-...
+##   &quot;html_url&quot;: &quot;https://github.com/STAT545-UBC-students/hw10-liao02x/issu...
+##   &quot;id&quot;: 388555365,
+##   &quot;node_id&quot;: &quot;MDU6SXNzdWUzODg1NTUzNjU=&quot;,
+##   &quot;number&quot;: 2,
+## ...</code></pre>
 </div>
 
 
