@@ -9,22 +9,60 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Set up
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+In this section we need `dplyr` and `tibble` to convert data to a `data.frame`, and `rvest` to deal with html stuffs.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(rvest))
 ```
 
-## Including Plots
+## Scraping data
 
-You can also embed plots, for example:
+I pick yelp for the test. When you visit the website [yelp](https://www.yelp.com/search?find_desc=ramen&find_loc=South+Granville,+Vancouver,+BC) it actually shows the searching result for ramen near UBC. Now I want to get the name, address and rating of every restaurants.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+The `html_nodes` paths are from [SelectorGadget](https://selectorgadget.com/). It is easy to use and works well in most cases.
+
+```{r}
+names <- read_html("https://www.yelp.com/search?find_desc=ramen&find_loc=UBC,+Vancouver,+BC") %>%
+    html_nodes(".heading--h3__373c0__1n4Of.alternate__373c0__1uacp") %>%
+    html_text()
+
+ratings <- read_html("https://www.yelp.com/search?find_desc=ramen&find_loc=UBC,+Vancouver,+BC") %>%
+    html_nodes(".i-stars__373c0__Y2F3O") %>%
+    html_attr("aria-label")
+
+address <- read_html("https://www.yelp.com/search?find_desc=ramen&find_loc=UBC,+Vancouver,+BC") %>%
+    html_nodes(".u-space-t1 .domtags--span__373c0__1VGzF") %>%
+    html_text()
+
+area <- read_html("https://www.yelp.com/search?find_desc=ramen&find_loc=UBC,+Vancouver,+BC") %>%
+    html_nodes(".text-align--right__373c0__3fmmn .border-color--default__373c0__2oFDT .border-color--default__373c0__2oFDT") %>%
+    html_text()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Now we can combine things all up together.
+
+```{r}
+yelp_ramen <- tibble(
+    name = names,
+    rating = c("", ratings),
+    address = address,
+    area = area
+)
+```
+
+Take a look at the `data.frame`. It is good, unless there are ads we can't remove at this moment in the first row. And the ad, which is `church's chicken` here, has no rating, so I need to fix this by adding a `""` at the very top.
+
+```{r}
+knitr::kable(head(yelp_ramen, 10))
+```
+
+Finally, we store the data for further processing, maybe.
+
+```{r}
+write.csv(yelp_ramen, "yelp_ramen.tsv")
+```
+
+Also note that there are no phone numbers available right now, because it is very complicated and not seperable by `html_nodes`. So we would need API queries for them. See the next chapter!

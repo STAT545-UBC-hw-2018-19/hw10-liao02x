@@ -1,0 +1,91 @@
+---
+title: "Homework10 Make API queries"
+author: "Minzhi Liao"
+date: "December 6, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Set up
+
+Again, we need `dplyr` and `tibble` to convert data to a `data.frame`. We are using [`RCurl`](http://www.rdocumentation.org/packages/RCurl) this time for html request. We also need `jsonlite` to deal with json.
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(RCurl))
+suppressPackageStartupMessages(library(jsonlite))
+```
+
+Then we need API key here. I read it from a local file. If you need to run this code, you should type in your API key from yelp which can be applied [here](https://www.yelp.com/developers/v3/manage_app).
+
+```{r}
+yelp_api_key <- readLines(file("yelp_key.private"))
+github_api_key <- readLines(file("github_key.private"))
+```
+
+## Scraping data by API queries
+
+We can do the exact same thing as the previous section, searching for ramen near UBC, but in a more elegent way.
+
+```{r}
+url <- "https://api.yelp.com/v3/businesses/search"
+
+header = c(
+	"Authorization" = paste("Bearer", yelp_api_key)
+)
+
+params = c(
+	"term" = "ramen",
+	"location" = "UBC, Vancouver, BC"
+)
+
+yelp_ramen_new <- fromJSON(getForm(url, 
+																	 .opts = list(httpheader = header), 
+																	 .params = params)
+													 ) %>%
+	as.data.frame() %>%
+	select(
+		name = businesses.name,
+		is_closed = businesses.is_closed,
+		reviews = businesses.review_count,
+		rating = businesses.rating,
+		price = businesses.price,
+		phone = businesses.phone,
+		distance = businesses.distance,
+		longi = region.center.longitude,
+		lati = region.center.latitude
+	)
+```
+
+Now we can see the result. In this way it is much more easier to get the infomation, and there are more things to get like number of reviews, closed or not, or the price and phone number. But there are also some disadvantages, like the APIs are mostly used in apps, so it contains coordinates instead of address, which is not friendly for human.
+
+```{r}
+knitr::kable(head(yelp_ramen_new, 10))
+```
+
+
+## Try more than `GET` with github API
+
+We can try adding a issue by `POST`.
+
+```{r}
+url <- "https://api.github.com/repos/STAT545-UBC-students/hw10-liao02x/issues"
+
+header = c(
+	"Accept" = "application/vnd.github.symmetra-preview+json",
+	"Authorization" = paste("token", github_api_key)
+)
+
+body = tibble(
+	title = "R API test",
+	body = "This issue is for R API test for github.",
+)
+
+postForm(url,
+				 .opts = list(httpheader = header,
+				 						 postfields = toJSON(body))
+				 )
+
